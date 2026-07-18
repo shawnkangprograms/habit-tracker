@@ -33,7 +33,7 @@ function App() {
       <AddHabitForm user={user} />
       <button onClick={() => signOut(auth)}>Sign Out</button>
       <h2>Add a new habit!</h2>
-      <HabitList habits={habits}/>
+      <HabitList habits={habits} uid={user.uid}/>
     </div>
   );
 }
