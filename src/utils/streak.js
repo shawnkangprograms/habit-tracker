@@ -8,6 +8,12 @@ export function calculateStreak(habitCheckoffs) {
     let streak = 0;
     let current = new Date();
 
+    // If today is NOT in checkedDates, move 'current' back one day
+    // use the same .setDate(.getDate() - 1) pattern
+    if (!checkedDates.has(current.toDateString())){
+        current.setDate(current.getDate() - 1);
+    }
+
     // The while loops continue-condition, using checkedDates and current
     while(checkedDates.has(current.toDateString())){
         streak++;

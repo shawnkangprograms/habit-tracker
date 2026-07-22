@@ -13,7 +13,7 @@ export function HabitItem({habit, uid, isCheckedOffToday, onToggle}) {
     {/*date.toISOString().split("T")[0];
     [{date: "...", count: 1} ]*/}
 
-    //CORRECT - But I'm getting a "'heatmapData' is assigned a value but never used" error message.
+    //CORRECT 
     const heatmapData = habitCheckoffs.map((c) => ({
         date: c.date.toDate().toISOString().split("T")[0],
         count: 1,
