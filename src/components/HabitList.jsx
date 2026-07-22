@@ -1,4 +1,4 @@
-import {toggleCheckoff} from "../utils/checkoff";
+import {toggleCheckoff} from "../utils/toggleCheckoff";
 import {HabitItem} from "./HabitItem";
 
 export function HabitList ({habits, uid, checkoffs}){
