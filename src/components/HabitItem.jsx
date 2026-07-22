@@ -1,5 +1,5 @@
 import {useHabitCheckoffs} from "../hooks/useHabitCheckoffs";
-import {calculateStreak} from "../utils/streak";
+import {calculateStreak} from "../utils/calculateStreak";
 import {deleteDoc, doc} from "firebase/firestore";
 import {db} from "../firebase";
 import "react-calendar-heatmap/dist/styles.css";
@@ -16,10 +16,16 @@ export function HabitItem({habit, uid, isCheckedOffToday, onToggle}) {
     [{date: "...", count: 1} ]*/}
 
     //CORRECT 
-    const heatmapData = habitCheckoffs.map((c) => ({
-        date: c.date.toDate().toISOString().split("T")[0],
-        count: 1,
-    }));
+    const heatmapData = habitCheckoffs.map((c) => {
+        const d = c.date.toDate();
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return {
+            date: `${year}-${month}-${day}`,
+            count: 1,
+        };
+    });
 
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
