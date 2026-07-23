@@ -1,11 +1,15 @@
+import {useState} from "react";
 import {useHabitCheckoffs} from "../hooks/useHabitCheckoffs";
 import {calculateStreak} from "../utils/calculateStreak";
-import {deleteDoc, doc} from "firebase/firestore";
+import {deleteDoc, updateDoc, doc} from "firebase/firestore";
 import {db} from "../firebase";
 import "react-calendar-heatmap/dist/styles.css";
 import CalendarHeatmap from "react-calendar-heatmap";
 
 export function HabitItem({habit, uid, isCheckedOffToday, onToggle}) {
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedName, setEditedName] = useState(habit.name);
+
     const {habitCheckoffs} = useHabitCheckoffs(uid, habit.id);
     const streak = calculateStreak(habitCheckoffs);
 
@@ -46,9 +50,25 @@ export function HabitItem({habit, uid, isCheckedOffToday, onToggle}) {
         }
     };
 
+    const handleSaveEdit = async () => {
+    const trimmed = editedName.trim();
+    if (trimmed.length === 0) {
+      return; // don't save an empty name
+    }
+
+    try {
+      const docRef = doc(db, "habits", habit.id);
+      // call updateDoc here
+      await updateDoc(docRef, {name: trimmed});
+    } catch (err) {
+      console.error("Error updating habit:", err);
+    }
+    setIsEditing(false);
+  };
+ 
+
     return (
         <li>
-            <p>Name: {habit.name}</p>
             <p>Current streak: {streak} days </p>
             <CalendarHeatmap
                 startDate = {sixMonthsAgo}
@@ -71,6 +91,24 @@ export function HabitItem({habit, uid, isCheckedOffToday, onToggle}) {
             
             {/*CORRECT*/}
             <button onClick={handleDelete}>Delete Habit</button>
+
+            {isEditing ? (
+        <div>
+          <input
+            value={editedName}
+            onChange={(e) => setEditedName(e.target.value)}
+          />
+          <button onClick={handleSaveEdit}>Save</button>
+          <button onClick={() => setIsEditing(false)}>Cancel</button>
+        </div>
+      ) : (
+        <div>
+          <p>Name: {habit.name}</p>
+          <button onClick={() => setIsEditing(true)}>Edit</button>
+        </div>
+      )}
+      {/* ...rest of your existing JSX (streak, heatmap, toggle button, delete button)... */}
+    
         </li>
     );
 }
